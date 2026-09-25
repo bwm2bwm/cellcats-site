@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="CellCats is a thoughtful, turn-based puzzle game about connecting blocks, discovering cats, and uncovering their stories.">
+  <meta name="theme-color" content="#fffdf8">
+  <title>CellCats — Playable Prototype</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23CDB067'/%3E%3Cpath d='M16 25 22 14l10 8 10-8 6 11v23H16Z' fill='%23fffdf8'/%3E%3Ccircle cx='26' cy='33' r='2.5' fill='%233A3530'/%3E%3Ccircle cx='38' cy='33' r='2.5' fill='%233A3530'/%3E%3Cpath d='M28 40q4 4 8 0' fill='none' stroke='%233A3530' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      --paper: #fffdf8;
+      --ink: #3a3530;
+      --muted: #746d66;
+      --gold: #cdb067;
+      --gold-dark: #9f8341;
+      --line: #e9e1d5;
+      --panel: #f4ebdd;
+      --coral: #ef907b;
+      --mint: #acd793;
+      --yellow: #f8df7d;
+      --blue: #89c8d2;
+      --shadow: 0 24px 70px rgba(58, 53, 48, .12);
+      --radius: 28px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 92% 8%, rgba(205,176,103,.16), transparent 24rem),
+        var(--paper);
+      font-family: Inter, ui-rounded, "Avenir Next", Avenir, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+    }
+
+    a { color: inherit; }
+    img { display: block; width: 100%; }
+    .wrap { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 82px;
+      border-bottom: 1px solid rgba(58,53,48,.08);
+    }
+
+    .wordmark { display: inline-flex; align-items: center; text-decoration: none; }
+    .wordmark img { width: 150px; height: auto; }
+    .topnote { color: var(--muted); font-size: .9rem; font-weight: 700; }
+
+    .hero {
+      display: grid;
+      grid-template-columns: .85fr 1.15fr;
+      gap: clamp(36px, 6vw, 82px);
+      align-items: center;
+      padding: clamp(70px, 10vw, 138px) 0 88px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 22px;
+      color: var(--gold-dark);
+      font-size: .78rem;
+      font-weight: 900;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; width: 28px; height: 3px; border-radius: 99px; background: var(--gold); }
+
+    h1, h2, h3, p { margin-top: 0; }
+    .hero-logo-heading { margin: 0; line-height: 0; }
+    .hero-logo {
+      width: min(100%, 520px);
+      height: auto;
+      margin-bottom: 24px;
+    }
+    .tagline {
+      max-width: 520px;
+      margin-bottom: 18px;
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      line-height: 1.22;
+      font-weight: 800;
+      letter-spacing: -.035em;
+    }
+    .intro { max-width: 560px; color: var(--muted); font-size: 1.08rem; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 0 23px;
+      border-radius: 15px;
+      background: var(--ink);
+      color: white;
+      font-weight: 850;
+      text-decoration: none;
+      box-shadow: 0 10px 24px rgba(58,53,48,.16);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .button:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(58,53,48,.2); }
+    .button.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); box-shadow: none; }
+
+    .hero-visual { position: relative; padding: 16px; }
+    .hero-visual::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 38px;
+      background: linear-gradient(135deg, var(--yellow), var(--coral) 46%, var(--mint));
+      transform: rotate(-2.3deg);
+    }
+    .hero-visual img { position: relative; border-radius: 25px; box-shadow: var(--shadow); }
+
+    section { padding: 92px 0; }
+    .section-head { display: grid; grid-template-columns: .65fr 1fr; gap: 42px; align-items: end; margin-bottom: 42px; }
+    .kicker { color: var(--gold-dark); font-size: .78rem; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+    h2 { margin-bottom: 0; font-size: clamp(2.2rem, 5vw, 4.2rem); line-height: 1.02; letter-spacing: -.06em; }
+    .section-lede { max-width: 650px; margin-bottom: 2px; color: var(--muted); font-size: 1.08rem; }
+
+    .video-shell { padding: 12px; border-radius: var(--radius); background: var(--ink); box-shadow: var(--shadow); }
+    .video { position: relative; overflow: hidden; aspect-ratio: 16 / 9; border-radius: 18px; background: #000; }
+    .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; counter-reset: steps; }
+    .step {
+      position: relative;
+      min-height: 230px;
+      padding: 28px 24px;
+      border: 1px solid var(--line);
+      border-radius: 23px;
+      background: rgba(255,255,255,.64);
+      counter-increment: steps;
+    }
+    .step::before {
+      content: "0" counter(steps);
+      display: block;
+      margin-bottom: 42px;
+      color: var(--gold-dark);
+      font-size: .83rem;
+      font-weight: 900;
+      letter-spacing: .08em;
+    }
+    .step:nth-child(2) { border-top: 6px solid var(--coral); }
+    .step:nth-child(3) { border-top: 6px solid var(--yellow); }
+    .step:nth-child(4) { border-top: 6px solid var(--mint); }
+    .step:first-child { border-top: 6px solid var(--blue); }
+    .step h3 { margin-bottom: 8px; font-size: 1.25rem; line-height: 1.2; }
+    .step p { margin-bottom: 0; color: var(--muted); }
+
+    .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .feature { overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; box-shadow: 0 18px 48px rgba(58,53,48,.07); }
+    .feature img { aspect-ratio: 16 / 9; object-fit: cover; border-bottom: 1px solid var(--line); }
+    .feature-copy { padding: 28px 30px 32px; }
+    .feature h3 { margin-bottom: 10px; font-size: 1.55rem; letter-spacing: -.035em; }
+    .feature p { margin-bottom: 0; color: var(--muted); }
+
+    .intent {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 36px;
+      align-items: stretch;
+      padding: clamp(32px, 6vw, 66px);
+      border-radius: 36px;
+      background: var(--ink);
+      color: white;
+    }
+    .intent img { height: 100%; min-height: 330px; object-fit: cover; border-radius: 24px; }
+    .intent-copy { display: flex; flex-direction: column; justify-content: center; }
+    .intent .kicker { color: var(--gold); }
+    .intent h2 { margin: 10px 0 22px; }
+    .intent p { color: #d9d3cc; }
+    .intent p:last-child { margin-bottom: 0; }
+
+    .about { display: grid; grid-template-columns: .65fr 1fr; gap: 42px; padding-bottom: 120px; }
+    .about-card { padding: 34px; border-left: 5px solid var(--gold); border-radius: 0 24px 24px 0; background: var(--panel); }
+    .about-card p:last-child { margin-bottom: 0; }
+    .social-links { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0; }
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 16px;
+      border: 1px solid rgba(58,53,48,.16);
+      border-radius: 999px;
+      background: rgba(255,255,255,.58);
+      font-weight: 800;
+      text-decoration: none;
+      transition: transform .18s ease, background .18s ease;
+    }
+    .social-link:hover { transform: translateY(-2px); background: #fff; }
+
+    footer { border-top: 1px solid var(--line); }
+    .footer-inner { display: flex; justify-content: space-between; gap: 24px; padding: 32px 0 42px; color: var(--muted); font-size: .9rem; }
+    .footer-inner strong { color: var(--ink); }
+
+    @media (max-width: 860px) {
+      .hero, .section-head, .intent, .about { grid-template-columns: 1fr; }
+      .hero { padding-top: 72px; }
+      .hero-visual { order: -1; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .section-head { gap: 18px; }
+      .intent img { min-height: 0; }
+    }
+
+    @media (max-width: 590px) {
+      .wrap { width: min(100% - 28px, 1120px); }
+      .topnote { display: none; }
+      .wordmark img { width: 132px; }
+      .hero { gap: 36px; padding-bottom: 64px; }
+      section { padding: 68px 0; }
+      .steps, .feature-grid { grid-template-columns: 1fr; }
+      .step { min-height: 0; }
+      .step::before { margin-bottom: 24px; }
+      .intent { padding: 24px; border-radius: 26px; }
+      .footer-inner { flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .button { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="wrap topbar">
+    <a class="wordmark" href="#top" aria-label="CellCats home"><img src="assets/title_logo.svg" alt=""></a>
+    <div class="topnote">Independent puzzle game · Playable prototype</div>
+  </header>
+
+  <main id="top">
+    <section class="wrap hero">
+      <div>
+        <div class="eyebrow">Playable prototype</div>
+        <h1 class="hero-logo-heading"><img class="hero-logo" src="assets/title_logo.svg" alt="CellCats"></h1>
+        <p class="tagline">A puzzle with no time limit—and cats to discover.</p>
+        <p class="intro">Move every block at once, anticipate what comes next, and build connections across the whole board. Each run reveals new cats, new challenges, and fragments of their stories.</p>
+        <div class="actions">
+          <a class="button" href="#gameplay">Watch gameplay</a>
+          <a class="button secondary" href="#about">About the developer</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <img src="assets/gameplay.jpg" alt="CellCats puzzle board with colorful cat-shaped blocks">
+      </div>
+    </section>
+
+    <section class="wrap" id="gameplay">
+      <div class="section-head">
+        <div>
+          <div class="kicker">Gameplay</div>
+          <h2>Think across the whole board.</h2>
+        </div>
+        <p class="section-lede">There is no timer. The challenge comes from reading the board, predicting how every block will move, and preparing connections before space runs out.</p>
+      </div>
+      <div class="video-shell">
+        <div class="video">
+          <iframe src="https://www.youtube-nocookie.com/embed/NBrHmpql1hw" title="CellCats playable prototype gameplay" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <div class="section-head">
+        <div>
+          <div class="kicker">Core rules</div>
+          <h2>Simple moves, layered decisions.</h2>
+        </div>
+        <p class="section-lede">Every swipe changes the entire board. A move that clears blocks now may create—or close off—the next opportunity.</p>
+      </div>
+      <div class="steps">
+        <article class="step">
+          <h3>Swipe</h3>
+          <p>Move every block up, down, left, or right at the same time.</p>
+        </article>
+        <article class="step">
+          <h3>Read what comes next</h3>
+          <p>New blocks enter from the opposite side in random positions.</p>
+        </article>
+        <article class="step">
+          <h3>Connect four</h3>
+          <p>Join four or more blocks of the same color to clear them and score.</p>
+        </article>
+        <article class="step">
+          <h3>Adapt</h3>
+          <p>New colors appear as the score rises, increasing the puzzle’s complexity.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <div class="section-head">
+        <div>
+          <div class="kicker">Beyond the score</div>
+          <h2>Every cat leaves something behind.</h2>
+        </div>
+        <p class="section-lede">Clearing blocks is also a way of getting to know the cats that inhabit CellCats.</p>
+      </div>
+      <div class="feature-grid">
+        <article class="feature">
+          <img src="assets/collection.jpg" alt="Choosing a discovered cat block for a future game">
+          <div class="feature-copy">
+            <h3>Discover and befriend cats</h3>
+            <p>Clear enough of a cat’s blocks to befriend it, add it to your collection, and use it in future games.</p>
+          </div>
+        </article>
+        <article class="feature">
+          <img src="assets/story.jpg" alt="A memory scene from the Camouflage Cat story">
+          <div class="feature-copy">
+            <h3>Uncover their memories</h3>
+            <p>Deepen each relationship to unlock memory fragments and gradually reveal the cat’s story.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <div class="intent">
+        <img src="assets/story-intent.jpg" alt="Camouflage Cat emerging from a world of shifting cells">
+        <div class="intent-copy">
+          <div class="kicker">Creative intent</div>
+          <h2>A puzzle about connection.</h2>
+          <p>The stories are intended to evoke issues affecting cats today while expressing the bond between cats and people. The bright, playful puzzle world and the quieter world of memory are designed to give each other emotional weight.</p>
+          <p>I care deeply about cat welfare. In the future, I hope to use a portion of the game’s revenue to support organizations working to protect and rescue cats.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap about" id="about">
+      <div>
+        <div class="kicker">Developer</div>
+        <h2>Koji Takamiya</h2>
+      </div>
+      <div class="about-card">
+        <p>Koji Takamiya is a Tokyo-based independent developer and freelance game and digital-content planner and project manager.</p>
+        <p>CellCats is a solo indie project that brings together his experience in game planning and production management with a long-standing interest in cats and character design.</p>
+        <div class="social-links" aria-label="Koji Takamiya on X">
+          <a class="social-link" href="https://x.com/bwm2bwm" target="_blank" rel="noopener noreferrer">X · @bwm2bwm ↗</a>
+          <a class="social-link" href="https://x.com/Play_PZ" target="_blank" rel="noopener noreferrer">X · @Play_PZ ↗</a>
+        </div>
+        <p><strong>Current status:</strong> playable prototype in development<br><strong>Planned full release:</strong> 2027</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <strong>CellCats</strong>
+      <span>© 2026 Koji Takamiya · All game footage shown is from the current prototype.</span>
+    </div>
+  </footer>
+</body>
+</html>

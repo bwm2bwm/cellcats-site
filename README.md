@@ -28,6 +28,14 @@ The default project URL will be similar to:
 ## Contents
 
 - `index.html` — the complete one-page website
+- `translations.js` — approved English and Japanese copy keyed by spreadsheet IDs 001–040
+- `i18n.js` — language selection, page text updates, and manual switch behavior
 - `assets/` — logos and screenshots used by the website
 - `.nojekyll` — serves the files directly without Jekyll processing
+
+## Japanese and English
+
+The site selects Japanese when the browser's first preferred language is Japanese (`ja`, `ja-JP`, and related codes); otherwise it selects English. A saved manual choice in `localStorage` takes priority. The JP / EN buttons update the page without reloading, and the selected language is saved under `cellcats-language`.
+
+The approved display copy is maintained in `translations.js`. Each entry uses the corresponding ID from the `サイト文言_日英対訳` sheet. When updating site copy, update both language values from the approved spreadsheet text and keep the ID mapping in the HTML `data-i18n` attributes. Do not edit the English or Japanese text during implementation.
 

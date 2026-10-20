@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="A puzzle with no time limit—and cats to discover.">
   <meta name="theme-color" content="#fffdf8">
-  <title>CellCats — Puzzle Game</title>
+  <title>CellCats | Puzzle Game · Playable Prototype</title>
+  <link rel="canonical" href="https://bwm2bwm.github.io/cellcats-site/">
   <meta property="og:title" content="CellCats — Puzzle Game">
   <meta property="og:description" content="A puzzle with no time limit—and cats to discover.">
   <meta property="og:image" content="https://bwm2bwm.github.io/cellcats-site/assets/og-image.jpg">
@@ -20,6 +21,26 @@
   <meta name="twitter:description" content="A puzzle with no time limit—and cats to discover.">
   <meta name="twitter:image" content="https://bwm2bwm.github.io/cellcats-site/assets/og-image.jpg">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23CDB067'/%3E%3Cpath d='M16 25 22 14l10 8 10-8 6 11v23H16Z' fill='%23fffdf8'/%3E%3Ccircle cx='26' cy='33' r='2.5' fill='%233A3530'/%3E%3Ccircle cx='38' cy='33' r='2.5' fill='%233A3530'/%3E%3Cpath d='M28 40q4 4 8 0' fill='none' stroke='%233A3530' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
+  <script>
+    (() => {
+      const root = document.documentElement;
+      let language = "";
+      try {
+        const saved = localStorage.getItem("cellcats-language");
+        if (saved === "ja" || saved === "en") language = saved;
+      } catch (_) {}
+      if (!language) {
+        const preferences = Array.isArray(navigator.languages) && navigator.languages.length
+          ? navigator.languages
+          : [navigator.language];
+        language = /^ja(?:-|$)/i.test(preferences[0] || "") ? "ja" : "en";
+      }
+      root.lang = language;
+      root.dataset.locale = language;
+      root.classList.add("i18n-pending");
+      window.setTimeout(() => root.classList.remove("i18n-pending"), 4000);
+    })();
+  </script>
   <style>
     :root {
       --paper: #fffdf8;
@@ -38,6 +59,7 @@
     }
 
     * { box-sizing: border-box; }
+    .i18n-pending body { visibility: hidden; }
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
@@ -65,6 +87,11 @@
     .wordmark { display: inline-flex; align-items: center; text-decoration: none; }
     .wordmark img { width: 150px; height: auto; }
     .topnote { color: var(--muted); font-size: .9rem; font-weight: 700; }
+    .topbar-controls { display: flex; align-items: center; gap: 18px; }
+    .language-switch { display: inline-flex; align-items: center; padding: 3px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.58); }
+    .language-switch button { min-width: 38px; min-height: 32px; padding: 0 9px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); font: inherit; font-size: .78rem; font-weight: 800; cursor: pointer; }
+    .language-switch button[aria-pressed="true"] { background: var(--ink); color: white; }
+    .language-switch button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 
     .hero {
       display: grid;
@@ -103,6 +130,7 @@
       letter-spacing: -.035em;
     }
     .intro { max-width: 560px; color: var(--muted); font-size: 1.08rem; }
+    [data-i18n-multiline] { white-space: pre-line; }
     .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
     .action-note { margin: 13px 0 0; color: var(--muted); font-size: .9rem; line-height: 1.45; }
     .button {
@@ -242,42 +270,51 @@
       .button { transition: none; }
     }
   </style>
+  <script src="translations.js"></script>
 </head>
 <body>
   <header class="wrap topbar">
-    <a class="wordmark" href="#top" aria-label="CellCats home"><img src="assets/title_logo.svg" alt=""></a>
-    <div class="topnote">Independent puzzle game · Playable prototype</div>
+    <a class="wordmark" href="#top" aria-label="CellCats home" data-i18n-aria-label="A06"><img src="assets/title_logo.svg" alt=""></a>
+    <div class="topbar-controls">
+      <div class="topnote" data-i18n="002">Playable prototype</div>
+      <div class="language-switch" role="group" aria-label="Language" data-i18n-aria-label="A07">
+        <button type="button" lang="ja" data-language="ja" aria-pressed="false">JP</button>
+        <button type="button" lang="en" data-language="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
   </header>
 
   <main id="top">
     <section class="wrap hero">
       <div>
-        <div class="eyebrow">Playable prototype</div>
+        <div class="eyebrow" data-i18n="001">Puzzle game · Playable prototype</div>
         <h1 class="hero-logo-heading"><img class="hero-logo" src="assets/title_logo.svg" alt="CellCats"></h1>
-        <p class="tagline">A puzzle with no time limit—and cats to discover.</p>
-        <p class="intro">Move every block at once, anticipate what comes next, and build connections across the whole board. Each run reveals new cats, new challenges, and fragments of their stories.</p>
+        <p class="tagline" data-i18n="003">A puzzle with no time limit—and cats to discover.</p>
+        <p class="intro" data-i18n="004" data-i18n-multiline>Move all the blocks at once and connect matching colors.
+Take your time, enjoy the puzzle, and meet a colorful cast of cats as you gradually uncover their stories.</p>
         <div class="actions">
-          <a class="button" href="https://bwm2bwm.github.io/cellcats-web-diagnostics/" target="_blank" rel="noopener noreferrer">Play the prototype ↗</a>
-          <a class="button secondary" href="#gameplay">Watch gameplay</a>
+          <a class="button" data-i18n="005" href="https://bwm2bwm.github.io/cellcats-web-diagnostics/" target="_blank" rel="noopener noreferrer">Play the prototype ↗</a>
+          <a class="button secondary" data-i18n="006" href="#gameplay">Watch gameplay</a>
         </div>
-        <p class="action-note">Play in your browser—no download required.<br>Currently in development.</p>
+        <p class="action-note"><span data-i18n="007">Play in your browser—no download required.</span><br><span data-i18n="008">Currently in development.</span></p>
       </div>
       <div class="hero-visual">
-        <img src="assets/gameplay.jpg" alt="CellCats puzzle board with colorful cat-shaped blocks">
+        <img src="assets/gameplay.jpg" alt="CellCats puzzle board with colorful cat-shaped blocks" data-i18n-alt="A01">
       </div>
     </section>
 
     <section class="wrap" id="gameplay">
       <div class="section-head">
         <div>
-          <div class="kicker">Gameplay</div>
-          <h2>Think across the whole board.</h2>
+          <div class="kicker" data-i18n="009">Gameplay</div>
+          <h2 data-i18n="010">Think across the whole board.</h2>
         </div>
-        <p class="section-lede">There is no timer. The challenge comes from reading the board, predicting how every block will move, and preparing connections before space runs out.</p>
+        <p class="section-lede" data-i18n="011" data-i18n-multiline>There is no time limit.
+Plan your next move by predicting how the blocks will shift. The key is to look at the whole board and connect matching colors before you run out of space.</p>
       </div>
       <div class="video-shell">
         <div class="video">
-          <iframe src="https://www.youtube-nocookie.com/embed/NBrHmpql1hw" title="CellCats playable prototype gameplay" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          <iframe src="https://www.youtube-nocookie.com/embed/NBrHmpql1hw" title="CellCats playable prototype gameplay" data-i18n-title="A05" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
       </div>
     </section>
@@ -285,27 +322,28 @@
     <section class="wrap">
       <div class="section-head">
         <div>
-          <div class="kicker">Core rules</div>
-          <h2>Simple moves, layered decisions.</h2>
+          <div class="kicker" data-i18n="012">Core rules</div>
+          <h2 data-i18n="013">Simple controls. Plenty to think about.</h2>
         </div>
-        <p class="section-lede">Every swipe changes the entire board. A move that clears blocks now may create—or close off—the next opportunity.</p>
+        <p class="section-lede" data-i18n="014" data-i18n-multiline>Every swipe changes the entire board.
+One move can open up new opportunities—or limit your options. Think ahead and plan your next move.</p>
       </div>
       <div class="steps">
         <article class="step">
-          <h3>Swipe</h3>
-          <p>Move every block up, down, left, or right at the same time.</p>
+          <h3 data-i18n="015">Swipe</h3>
+          <p data-i18n="016">Move every block up, down, left, or right at the same time.</p>
         </article>
         <article class="step">
-          <h3>Read what comes next</h3>
-          <p>New blocks enter from the opposite side in random positions.</p>
+          <h3 data-i18n="017">Read what comes next</h3>
+          <p data-i18n="018">New blocks enter from the opposite side in random positions.</p>
         </article>
         <article class="step">
-          <h3>Connect four</h3>
-          <p>Join four or more blocks of the same color to clear them and score.</p>
+          <h3 data-i18n="019">Connect four</h3>
+          <p data-i18n="020">Join four or more blocks of the same color to clear them and score.</p>
         </article>
         <article class="step">
-          <h3>Adapt</h3>
-          <p>New colors appear as the score rises, increasing the puzzle’s complexity.</p>
+          <h3 data-i18n="021">Adapt</h3>
+          <p data-i18n="022">New colors appear as the score rises, increasing the puzzle’s complexity.</p>
         </article>
       </div>
     </section>
@@ -313,24 +351,26 @@
     <section class="wrap">
       <div class="section-head">
         <div>
-          <div class="kicker">Beyond the score</div>
-          <h2>Every cat leaves something behind.</h2>
+          <div class="kicker" data-i18n="023">Beyond the score</div>
+          <h2 data-i18n="024">Every cat leaves something behind.</h2>
         </div>
-        <p class="section-lede">Clearing blocks is also a way of getting to know the cats that inhabit CellCats.</p>
+        <p class="section-lede" data-i18n="025">As you clear blocks, you'll encounter a variety of cats in the world of CellCats.</p>
       </div>
       <div class="feature-grid">
         <article class="feature">
-          <img src="assets/collection.jpg" alt="Choosing a discovered cat block for a future game">
+          <img src="assets/collection.jpg" alt="Selecting a discovered cat to use in a future game" data-i18n-alt="A02">
           <div class="feature-copy">
-            <h3>Discover and befriend cats</h3>
-            <p>Clear enough of a cat’s blocks to befriend it, add it to your collection, and use it in future games.</p>
+            <h3 data-i18n="026">Discover and befriend cats</h3>
+            <p data-i18n="027" data-i18n-multiline>Clear more of each cat's blocks to become friends.
+Once you've befriended a cat, it joins your collection, and you can choose it to play with in future games.</p>
           </div>
         </article>
         <article class="feature">
-          <img src="assets/story.jpg" alt="A memory scene from the Camouflage Cat story">
+          <img src="assets/story.jpg" alt="A memory scene from the Camouflage Cat story" data-i18n-alt="A03">
           <div class="feature-copy">
-            <h3>Uncover their memories</h3>
-            <p>Deepen each relationship to unlock memory fragments and gradually reveal the cat’s story.</p>
+            <h3 data-i18n="028">Uncover their memories</h3>
+            <p data-i18n="029" data-i18n-multiline>As your friendship with each cat grows, you'll unlock fragments of its memories.
+Collect these fragments to gradually uncover the stories each cat holds within.</p>
           </div>
         </article>
       </div>
@@ -338,29 +378,33 @@
 
     <section class="wrap">
       <div class="intent">
-        <img src="assets/story-intent.jpg" alt="Camouflage Cat emerging from a world of shifting cells">
+        <img src="assets/story-intent.jpg" alt="Camouflage Cat emerging from a world of shifting cells" data-i18n-alt="A04">
         <div class="intent-copy">
-          <div class="kicker">Creative intent</div>
-          <h2>A puzzle about connection.</h2>
-          <p>The stories are intended to evoke issues affecting cats today while expressing the bond between cats and people. The bright, playful puzzle world and the quieter world of memory are designed to give each other emotional weight.</p>
-          <p>I care deeply about cat welfare. In the future, I hope to use a portion of the game’s revenue to support organizations working to protect and rescue cats.</p>
+          <div class="kicker" data-i18n="030">Creative intent</div>
+          <h2 data-i18n="031">A puzzle about connection.</h2>
+          <p data-i18n="032" data-i18n-multiline>CellCats explores the connections between cats and people, while also touching on the challenges cats face in the world today.
+The bright, playful puzzle world contrasts with the quiet world of the cats' memories.
+Through this contrast, I hope to create an experience that stays with players long after they finish playing.</p>
+          <p data-i18n="033" data-i18n-multiline>I care deeply about the welfare and protection of cats.
+In the future, I hope to donate a portion of CellCats' revenue to organizations dedicated to cat rescue and welfare.</p>
         </div>
       </div>
     </section>
 
     <section class="wrap about" id="about">
       <div>
-        <div class="kicker">Developer</div>
-        <h2>Koji Takamiya</h2>
+        <div class="kicker" data-i18n="034">Developer</div>
+        <h2 data-i18n="035">Koji Takamiya</h2>
       </div>
       <div class="about-card">
-        <p>Koji Takamiya is a Tokyo-based independent developer and freelance game and digital-content planner and project manager.</p>
-        <p>CellCats is a solo indie project that brings together his experience in game planning and production management with a long-standing interest in cats and character design.</p>
-        <div class="social-links" aria-label="Koji Takamiya on X">
+        <p data-i18n="036" data-i18n-multiline>Koji Takamiya is an independent game developer based in Tokyo, Japan.
+He also works as a freelance planner, production coordinator, and project manager for games and digital content.</p>
+        <p data-i18n="037">CellCats is a solo-developed indie game that combines his experience in game planning and production with his long-standing interest in cats and character creation.</p>
+        <div class="social-links" aria-label="Koji Takamiya's X accounts" data-i18n-aria-label="A08">
           <a class="social-link" href="https://x.com/bwm2bwm" target="_blank" rel="noopener noreferrer">X · @bwm2bwm ↗</a>
           <a class="social-link" href="https://x.com/Play_PZ" target="_blank" rel="noopener noreferrer">X · @Play_PZ ↗</a>
         </div>
-        <p><strong>Current status:</strong> playable prototype in development<br><strong>Planned full release:</strong> 2027</p>
+        <p><span data-i18n="038">Current status: playable prototype in development</span><br><span data-i18n="039">Planned full release: 2027</span></p>
       </div>
     </section>
   </main>
@@ -368,8 +412,9 @@
   <footer>
     <div class="wrap footer-inner">
       <strong>CellCats</strong>
-      <span>© 2026 Koji Takamiya · All game footage shown is from the current prototype.</span>
+      <span data-i18n="040">CellCats © 2026 Koji Takamiya · All game footage shown is from the current prototype.</span>
     </div>
   </footer>
+  <script src="i18n.js"></script>
 </body>
 </html>

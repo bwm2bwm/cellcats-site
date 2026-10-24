@@ -3,11 +3,17 @@
   const translations = window.CELLCATS_TRANSLATIONS || {};
   const buttons = Array.from(document.querySelectorAll("[data-language]"));
   const description = document.querySelector('meta[name="description"]');
+  const video = document.querySelector("iframe[data-video-ja]");
+  const englishVideoUrl = video?.getAttribute("src");
 
   function setLanguage(language, save = false) {
     const selected = language === "ja" ? "ja" : "en";
     root.lang = selected;
     root.dataset.locale = selected;
+    if (video) {
+      const videoUrl = selected === "ja" ? video.dataset.videoJa : englishVideoUrl;
+      if (videoUrl && video.getAttribute("src") !== videoUrl) video.setAttribute("src", videoUrl);
+    }
     document.title = selected === "ja"
       ? "CellCats | パズルゲーム・体験版公開中"
       : "CellCats | Puzzle Game · Playable Prototype";
